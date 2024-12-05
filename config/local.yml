@@ -1,0 +1,18 @@
+environment: "local" # may be "local" or "prod"
+
+http_server:
+  port: 8080
+  address: "127.0.0.1"
+  timeout: 15s # write and read timeouts
+  idle_timeout: 60s
+
+metric_server:
+  port: 8081
+  address: "127.0.0.1"
+
+database:
+  host: "postgres"
+  port: 5432
+  user: "postgres"
+  password: "postgres"
+  name: "postgres"
