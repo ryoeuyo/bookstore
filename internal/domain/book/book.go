@@ -12,28 +12,31 @@ type Book struct {
 	Date            time.Time `json:"date"`
 	CreatedAt       time.Time `json:"createdAt"`
 	UpdatedAt       time.Time `json:"updatedAt"`
-	Ttile           string    `json:"title"`
+	Title           string    `json:"title"`
+	Description     string    `json:"description"`
 	Genre           string    `json:"genre"`
-	NumberPages     int64     `json:"numberPages"`
+	NumberPages     int       `json:"numberPages"`
 	Price           float64   `json:"price"`
-	QuantityOnStock int64     `json:"quantityOnStock"`
+	QuantityOnStock int       `json:"quantityOnStock"`
 }
 
 func NewBook(
 	UUID uuid.UUID,
 	Title,
+	Description,
 	Genre,
 	Author string,
 	Date,
 	CreatedAt,
 	UpdatedAt time.Time,
 	QuantityOnStock,
-	NumberPages int64,
+	NumberPages int,
 	Price float64,
 ) *Book {
 	return &Book{
 		UUID:            UUID,
-		Ttile:           Title,
+		Title:           Title,
+		Description:     Description,
 		Genre:           Genre,
 		Author:          Author,
 		Date:            Date,

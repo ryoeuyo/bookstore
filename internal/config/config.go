@@ -18,7 +18,7 @@ type AppConfig struct {
 type HTTPServer struct {
 	Port        uint16        `yaml:"port"`
 	Address     string        `yaml:"address"`
-	Timeout     time.Duration `yaml:"duration"`
+	Timeout     time.Duration `yaml:"timeout"`
 	IdleTimeout time.Duration `yaml:"idle_timeout"`
 }
 
@@ -49,13 +49,13 @@ func MustLoad() *AppConfig {
 	}
 
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		panic("Config file does not exists")
+		panic("config file does not exists")
 	}
 
 	var cfg AppConfig
 
 	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
-		panic("Failed to read config")
+		panic("failed to read config")
 	}
 
 	return &cfg
