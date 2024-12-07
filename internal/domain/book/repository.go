@@ -1,11 +1,15 @@
 package book
 
-import "github.com/google/uuid"
+import (
+	"context"
+
+	"github.com/google/uuid"
+	"github.com/ryoeuyo/test_go/internal/infrastructure/repository/postgres"
+)
 
 type BookRepository interface {
-	FetchAll() (*[]Book, error)
-	FetchByUUID(uuid uuid.UUID) (*Book, error)
-	Create(newBook *Book) (uuid.UUID, error)
-	Update(UUID uuid.UUID) error
-	Delete(UUID uuid.UUID) error
+	AllBooks(ctx context.Context) ([]postgres.Book, error)
+	GetBook(ctx context.Context, id uuid.UUID) (postgres.Book, error)
+	AddBook(ctx context.Context, params postgres.AddBookParams) (uuid.UUID, error)
+	DeleteBook(ctx context.Context, id uuid.UUID) (uuid.UUID, error)
 }

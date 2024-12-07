@@ -35,11 +35,6 @@ type Database struct {
 	Name     string `yaml:"name"`
 }
 
-// MustLoad load config file
-//
-// # Panic on error!
-//
-// Returning *AppConfig
 func MustLoad() *AppConfig {
 	godotenv.Load()
 

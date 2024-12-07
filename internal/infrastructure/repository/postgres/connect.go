@@ -8,24 +8,20 @@ import (
 	"github.com/ryoeuyo/test_go/internal/config"
 )
 
-func Connect(ctx context.Context, cfg config.Database) (*pgx.Conn, error) {
+func MustConnect(ctx context.Context, cfg config.Database) *pgx.Conn {
 	connString := fmt.Sprintf(
 		"host=%s port=%d dbname=%s user=%s password=%s",
 		cfg.Host, cfg.Port, cfg.Name, cfg.User, cfg.Password,
 	)
-	connectConfig, err := pgx.ParseConfig(connString)
-	if err != nil {
-		return nil, err
-	}
 
-	conn, err := pgx.ConnectConfig(ctx, connectConfig)
+	conn, err := pgx.Connect(ctx, connString)
 	if err != nil {
-		return nil, err
+		panic("failed connect to database")
 	}
 
 	if err := conn.Ping(ctx); err != nil {
-		return nil, err
+		panic("failed ping to database")
 	}
 
-	return conn, nil
+	return conn
 }

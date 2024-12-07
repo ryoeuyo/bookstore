@@ -12,11 +12,6 @@ const (
 	envProd  = "prod"
 )
 
-// Setup configured logger by env
-//
-// Uses github.com/golang-cz/devslog. Only on local env. For pretty logging
-//
-// Returning *slog.Logger
 func Setup(env string) *slog.Logger {
 	var log *slog.Logger
 

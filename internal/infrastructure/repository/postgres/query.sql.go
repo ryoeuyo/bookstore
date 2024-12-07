@@ -8,11 +8,48 @@ package postgres
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const addBook = `-- name: AddBook :one
+INSERT INTO books (
+    title, description,
+    genre, author,
+    date, numberPages
+) VALUES (
+    $1, $2,
+    $3, $4,
+    $5, $6
+)
+RETURNING id
+`
+
+type AddBookParams struct {
+	Title       string
+	Description string
+	Genre       string
+	Author      string
+	Date        pgtype.Timestamp
+	Numberpages int32
+}
+
+func (q *Queries) AddBook(ctx context.Context, arg AddBookParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, addBook,
+		arg.Title,
+		arg.Description,
+		arg.Genre,
+		arg.Author,
+		arg.Date,
+		arg.Numberpages,
+	)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
 const allBooks = `-- name: AllBooks :many
-SELECT id, author, date, createdat, updatedat, title, description, genre, numberpages, price, quantityonstock FROM books
+SELECT id, author, date, createdat, updatedat, title, description, genre, numberpages FROM books
 `
 
 func (q *Queries) AllBooks(ctx context.Context) ([]Book, error) {
@@ -34,8 +71,6 @@ func (q *Queries) AllBooks(ctx context.Context) ([]Book, error) {
 			&i.Description,
 			&i.Genre,
 			&i.Numberpages,
-			&i.Price,
-			&i.Quantityonstock,
 		); err != nil {
 			return nil, err
 		}
@@ -47,66 +82,24 @@ func (q *Queries) AllBooks(ctx context.Context) ([]Book, error) {
 	return items, nil
 }
 
-const createBook = `-- name: CreateBook :one
-INSERT INTO books (
-    title, description,
-    genre, author,
-    date, quantityOnStock,
-    numberPages, price
-) VALUES (
-    $1, $2,
-    $3, $4,
-    $5, $6,
-    $7, $8
-)
-RETURNING id
-`
-
-type CreateBookParams struct {
-	Title           string
-	Description     string
-	Genre           string
-	Author          string
-	Date            pgtype.Timestamp
-	Quantityonstock int32
-	Numberpages     int32
-	Price           pgtype.Numeric
-}
-
-func (q *Queries) CreateBook(ctx context.Context, arg CreateBookParams) (pgtype.UUID, error) {
-	row := q.db.QueryRow(ctx, createBook,
-		arg.Title,
-		arg.Description,
-		arg.Genre,
-		arg.Author,
-		arg.Date,
-		arg.Quantityonstock,
-		arg.Numberpages,
-		arg.Price,
-	)
-	var id pgtype.UUID
-	err := row.Scan(&id)
-	return id, err
-}
-
 const deleteBook = `-- name: DeleteBook :one
 DELETE FROM books
 WHERE id = $1
 RETURNING id
 `
 
-func (q *Queries) DeleteBook(ctx context.Context, id pgtype.UUID) (pgtype.UUID, error) {
+func (q *Queries) DeleteBook(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
 	row := q.db.QueryRow(ctx, deleteBook, id)
 	err := row.Scan(&id)
 	return id, err
 }
 
 const getBook = `-- name: GetBook :one
-SELECT id, author, date, createdat, updatedat, title, description, genre, numberpages, price, quantityonstock FROM books
+SELECT id, author, date, createdat, updatedat, title, description, genre, numberpages FROM books
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetBook(ctx context.Context, id pgtype.UUID) (Book, error) {
+func (q *Queries) GetBook(ctx context.Context, id uuid.UUID) (Book, error) {
 	row := q.db.QueryRow(ctx, getBook, id)
 	var i Book
 	err := row.Scan(
@@ -119,46 +112,6 @@ func (q *Queries) GetBook(ctx context.Context, id pgtype.UUID) (Book, error) {
 		&i.Description,
 		&i.Genre,
 		&i.Numberpages,
-		&i.Price,
-		&i.Quantityonstock,
 	)
 	return i, err
-}
-
-const updatePrice = `-- name: UpdatePrice :one
-UPDATE books
-set price = $2
-WHERE id = $1
-RETURNING id
-`
-
-type UpdatePriceParams struct {
-	ID    pgtype.UUID
-	Price pgtype.Numeric
-}
-
-func (q *Queries) UpdatePrice(ctx context.Context, arg UpdatePriceParams) (pgtype.UUID, error) {
-	row := q.db.QueryRow(ctx, updatePrice, arg.ID, arg.Price)
-	var id pgtype.UUID
-	err := row.Scan(&id)
-	return id, err
-}
-
-const updateQuantity = `-- name: UpdateQuantity :one
-UPDATE books
-set quantityOnStock = $2
-WHERE id = $1
-RETURNING id
-`
-
-type UpdateQuantityParams struct {
-	ID              pgtype.UUID
-	Quantityonstock int32
-}
-
-func (q *Queries) UpdateQuantity(ctx context.Context, arg UpdateQuantityParams) (pgtype.UUID, error) {
-	row := q.db.QueryRow(ctx, updateQuantity, arg.ID, arg.Quantityonstock)
-	var id pgtype.UUID
-	err := row.Scan(&id)
-	return id, err
 }

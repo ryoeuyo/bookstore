@@ -9,7 +9,5 @@ CREATE TABLE books (
     title VARCHAR(256) NOT NULL,
     description VARCHAR NOT NULL,
     genre VARCHAR(256) NOT NULL,
-    numberPages INTEGER NOT NULL,
-    price NUMERIC(10, 2) NULL,
-    quantityOnStock INTEGER NOT NULL
+    numberPages INTEGER NOT NULL
 )

@@ -5,30 +5,16 @@ WHERE id = $1 LIMIT 1;
 -- name: AllBooks :many
 SELECT * FROM books;
 
--- name: CreateBook :one
+-- name: AddBook :one
 INSERT INTO books (
     title, description,
     genre, author,
-    date, quantityOnStock,
-    numberPages, price
+    date, numberPages
 ) VALUES (
     $1, $2,
     $3, $4,
-    $5, $6,
-    $7, $8
+    $5, $6
 )
-RETURNING id;
-
--- name: UpdatePrice :one
-UPDATE books
-set price = $2
-WHERE id = $1
-RETURNING id;
-
--- name: UpdateQuantity :one
-UPDATE books
-set quantityOnStock = $2
-WHERE id = $1
 RETURNING id;
 
 -- name: DeleteBook :one
