@@ -2,13 +2,19 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 )
 
-func (s *Service) DeleteBook(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
+func (s *BookService) DeleteBook(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
 	id, err := s.Repository.DeleteBook(ctx, id)
 	if err != nil {
+		if err == pgx.ErrNoRows {
+			return uuid.Nil, errors.New(ErrNotExists)
+		}
+
 		return uuid.Nil, err
 	}
 

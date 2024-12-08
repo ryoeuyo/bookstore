@@ -9,29 +9,27 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const addBook = `-- name: AddBook :one
 INSERT INTO books (
     title, description,
     genre, author,
-    date, numberPages
+    numberPages
 ) VALUES (
     $1, $2,
     $3, $4,
-    $5, $6
+    $5
 )
 RETURNING id
 `
 
 type AddBookParams struct {
-	Title       string
-	Description string
-	Genre       string
-	Author      string
-	Date        pgtype.Timestamp
-	Numberpages int32
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Genre       string `json:"genre"`
+	Author      string `json:"author"`
+	Numberpages int32  `json:"numberpages"`
 }
 
 func (q *Queries) AddBook(ctx context.Context, arg AddBookParams) (uuid.UUID, error) {
@@ -40,7 +38,6 @@ func (q *Queries) AddBook(ctx context.Context, arg AddBookParams) (uuid.UUID, er
 		arg.Description,
 		arg.Genre,
 		arg.Author,
-		arg.Date,
 		arg.Numberpages,
 	)
 	var id uuid.UUID
@@ -49,7 +46,7 @@ func (q *Queries) AddBook(ctx context.Context, arg AddBookParams) (uuid.UUID, er
 }
 
 const allBooks = `-- name: AllBooks :many
-SELECT id, author, date, createdat, updatedat, title, description, genre, numberpages FROM books
+SELECT id, author, createdat, updatedat, title, description, genre, numberpages FROM books
 `
 
 func (q *Queries) AllBooks(ctx context.Context) ([]Book, error) {
@@ -64,7 +61,6 @@ func (q *Queries) AllBooks(ctx context.Context) ([]Book, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Author,
-			&i.Date,
 			&i.Createdat,
 			&i.Updatedat,
 			&i.Title,
@@ -95,7 +91,7 @@ func (q *Queries) DeleteBook(ctx context.Context, id uuid.UUID) (uuid.UUID, erro
 }
 
 const getBook = `-- name: GetBook :one
-SELECT id, author, date, createdat, updatedat, title, description, genre, numberpages FROM books
+SELECT id, author, createdat, updatedat, title, description, genre, numberpages FROM books
 WHERE id = $1 LIMIT 1
 `
 
@@ -105,7 +101,6 @@ func (q *Queries) GetBook(ctx context.Context, id uuid.UUID) (Book, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.Author,
-		&i.Date,
 		&i.Createdat,
 		&i.Updatedat,
 		&i.Title,

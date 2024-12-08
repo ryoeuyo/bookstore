@@ -5,18 +5,17 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ryoeuyo/test_go/internal/application/service"
-	"github.com/ryoeuyo/test_go/internal/domain/book"
+	"github.com/ryoeuyo/bookstore/internal/application/service"
+	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
-func AddBook(ctx context.Context, service service.Service) gin.HandlerFunc {
+func AddBook(ctx context.Context, service *service.BookService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		var book book.Book
+		var book postgres.AddBookParams
 		if err := c.ShouldBindJSON(&book); err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": http.StatusBadRequest,
-				"error":  err.Error(),
+				"error": err.Error(),
 			})
 			return
 		}
@@ -25,16 +24,13 @@ func AddBook(ctx context.Context, service service.Service) gin.HandlerFunc {
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"status": http.StatusInternalServerError,
-				"error":  err.Error(),
+				"error": err.Error(),
 			})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"status":  http.StatusOK,
-			"message": "successfully added",
-			"id":      id,
+			"id": id,
 		})
 	}
 }

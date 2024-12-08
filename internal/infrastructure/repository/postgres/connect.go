@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/jackc/pgx/v5"
-	"github.com/ryoeuyo/test_go/internal/config"
+	"github.com/ryoeuyo/bookstore/internal/config"
 )
 
 func MustConnect(ctx context.Context, cfg config.Database) *pgx.Conn {

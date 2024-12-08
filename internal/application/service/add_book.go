@@ -5,24 +5,15 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/ryoeuyo/test_go/internal/domain/book"
-	"github.com/ryoeuyo/test_go/internal/infrastructure/repository/postgres"
+	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
-func (s *Service) AddBook(ctx context.Context, book book.Book) (uuid.UUID, error) {
-	if book.Author == "" || book.Title == "" {
-		return uuid.Nil, errors.New("author and title must be set")
+func (s *BookService) AddBook(ctx context.Context, book postgres.AddBookParams) (uuid.UUID, error) {
+	if !IsValidBook(&book) {
+		return uuid.Nil, errors.New(ErrInvalidBook)
 	}
 
-	id, err := s.Repository.AddBook(ctx, postgres.AddBookParams{
-		Title:       book.Title,
-		Description: book.Description,
-		Genre:       book.Genre,
-		Author:      book.Author,
-		Date:        pgtype.Timestamp{Time: book.Date, Valid: true},
-		Numberpages: int32(book.NumberPages),
-	})
+	id, err := s.Repository.AddBook(ctx, book)
 	if err != nil {
 		return uuid.Nil, err
 	}

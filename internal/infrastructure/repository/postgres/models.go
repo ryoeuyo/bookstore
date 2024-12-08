@@ -5,18 +5,18 @@
 package postgres
 
 import (
+	"time"
+
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Book struct {
-	ID          uuid.UUID
-	Author      string
-	Date        pgtype.Timestamp
-	Createdat   pgtype.Timestamp
-	Updatedat   pgtype.Timestamp
-	Title       string
-	Description string
-	Genre       string
-	Numberpages int32
+	ID          uuid.UUID `json:"id"`
+	Author      string    `json:"author"`
+	Createdat   time.Time `json:"createdat"`
+	Updatedat   time.Time `json:"updatedat"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	Genre       string    `json:"genre"`
+	Numberpages int32     `json:"numberpages"`
 }

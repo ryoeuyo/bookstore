@@ -2,22 +2,23 @@ package crud
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/ryoeuyo/test_go/internal/application/service"
+	"github.com/ryoeuyo/bookstore/internal/application/service"
 )
 
-func DeleteBook(ctx context.Context, service service.Service) gin.HandlerFunc {
+func DeleteBook(ctx context.Context, service *service.BookService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		idQuery := c.Query("id")
-		id, err := uuid.Parse(idQuery)
+		idParam := c.Param("id")
+		log.Print(idParam)
+		id, err := uuid.Parse(idParam)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"status": http.StatusBadRequest,
-				"error":  "id is invalid",
+				"error": "id is invalid",
 			})
 			return
 		}
@@ -26,16 +27,13 @@ func DeleteBook(ctx context.Context, service service.Service) gin.HandlerFunc {
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"status": http.StatusInternalServerError,
-				"error":  err.Error(),
+				"error": err.Error(),
 			})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"status":  http.StatusOK,
-			"message": "book successfully deleted",
-			"id":      id,
+			"id": id,
 		})
 	}
 }

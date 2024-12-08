@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/ryoeuyo/test_go/internal/infrastructure/repository/postgres"
+	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
 type BookRepository interface {
