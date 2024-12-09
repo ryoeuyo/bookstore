@@ -1,4 +1,6 @@
 APP_NAME := bookstore
+GOOSE_MIGRATIONS_DIR := ./sql/migrations
+GOOSE_DRIVER := postgres
 
 run-local:
 	go build -o ./build/$(APP_NAME) ./cmd/bookstore/main.go
@@ -11,3 +13,5 @@ run-prod:
 run:
 	go build -o ./build/$(APP_NAME) ./cmd/bookstore/main.go
 	./build/$(APP_NAME)
+
+migrations:

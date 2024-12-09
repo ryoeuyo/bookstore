@@ -28,11 +28,13 @@ type MetricServer struct {
 }
 
 type Database struct {
-	Host     string `yaml:"host"`
-	Port     uint16 `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
-	Name     string `yaml:"name"`
+	Engine       string `yaml:"engine"`
+	Host         string `yaml:"host"`
+	Port         uint16 `yaml:"port"`
+	User         string `yaml:"user"`
+	Password     string `yaml:"password"`
+	Name         string `yaml:"name"`
+	MigrationDir string `yaml:"migration_path"`
 }
 
 func MustLoad() *AppConfig {

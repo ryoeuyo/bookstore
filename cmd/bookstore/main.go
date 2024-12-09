@@ -88,8 +88,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// TODO: init metrics
 	// TODO: write more handlers
-	// TODO: accept migartions in code
 	// TODO: write swagger docs
 }
