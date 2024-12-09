@@ -18,7 +18,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
 func TestAddBook(t *testing.T) {
 	mockRepo := new(mocks.BookRepository)
 	svc := &service.BookService{
@@ -41,6 +40,8 @@ func TestAddBook(t *testing.T) {
 	t.Run("successful add", func(t *testing.T) {
 		reqBody, _ := json.Marshal(testBook)
 		req, _ := http.NewRequest(http.MethodPost, "/books", bytes.NewReader(reqBody))
+		defer req.Body.Close()
+
 		req.Header.Set("Content-Type", "application/json")
 
 		rr := httptest.NewRecorder()

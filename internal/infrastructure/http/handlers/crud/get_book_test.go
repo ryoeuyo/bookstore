@@ -17,7 +17,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-
 func TestGetBook(t *testing.T) {
 	mockRepo := new(mocks.BookRepository)
 	svc := &service.BookService{
@@ -38,6 +37,7 @@ func TestGetBook(t *testing.T) {
 		}
 
 		req, _ := http.NewRequest(http.MethodGet, "/books/"+mockID.String(), nil)
+		defer req.Body.Close()
 
 		rr := httptest.NewRecorder()
 

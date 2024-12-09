@@ -14,6 +14,7 @@ import (
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/checks/ping"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/crud"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/middleware"
+	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/metric"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 	"github.com/ryoeuyo/bookstore/internal/shared/logger"
 )
@@ -34,14 +35,20 @@ func main() {
 		"database": cfg.Database.Name,
 	}))
 
+	// Initialize handler dependencies
 	repo := postgres.New(conn)
-
+	metrics := metric.NewMetrics()
 	service := &service.BookService{
 		Repository: repo,
 	}
 
 	baseRouter := gin.New()
-	baseRouter.Use(gin.Recovery(), middleware.SlogLogger(logger))
+	baseRouter.Use(
+		gin.Recovery(),
+		middleware.IncRequest(metrics),
+		middleware.ObserveRequest(metrics),
+		middleware.SlogLogger(logger),
+	)
 
 	apiRoute := baseRouter.Group("/api")
 	{
@@ -67,13 +74,22 @@ func main() {
 		MaxHeaderBytes: 1 << 20,
 	}
 
+	go func() {
+		err := metric.StartMetricServer(cfg.MetricServer.Address, int(cfg.MetricServer.Port))
+		if err != nil {
+			logger.Error("error start metric server", slog.String("error", err.Error()))
+			os.Exit(1)
+		}
+	}()
+
 	err := srv.ListenAndServe()
 	if err != nil {
 		logger.Error("error start server", slog.String("error", err.Error()))
 		os.Exit(1)
 	}
 
-	// TODO: write swagger docs
 	// TODO: init metrics
-	// TODO: Start application
+	// TODO: write more handlers
+	// TODO: accept migartions in code
+	// TODO: write swagger docs
 }
