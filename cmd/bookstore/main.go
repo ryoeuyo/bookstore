@@ -38,9 +38,7 @@ func main() {
 	// Initialize handler dependencies
 	repo := postgres.New(conn)
 	metrics := metric.NewMetrics()
-	service := &service.BookService{
-		Repository: repo,
-	}
+	service := service.NewBookService(repo)
 
 	baseRouter := gin.New()
 	baseRouter.Use(
