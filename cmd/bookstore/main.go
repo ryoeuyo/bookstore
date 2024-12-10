@@ -40,32 +40,34 @@ func main() {
 	metrics := metric.NewMetrics()
 	service := service.NewBookService(repo)
 
-	baseRouter := gin.New()
-	baseRouter.Use(
+	router := gin.New()
+	router.Use(
 		gin.Recovery(),
 		middleware.IncRequest(metrics),
 		middleware.ObserveRequest(metrics),
 		middleware.SlogLogger(logger),
 	)
 
-	apiRoute := baseRouter.Group("/api")
+	apiRouter := router.Group("/api")
 	{
-		bookRoute := apiRoute.Group("/books")
+		bookRoute := apiRouter.Group("/books")
 		bookRoute.GET("/", crud.AllBooks(ctx, service))
 		bookRoute.POST("/", crud.AddBook(ctx, service))
 		bookRoute.GET("/:id", crud.GetBook(ctx, service))
 		bookRoute.DELETE("/:id", crud.DeleteBook(ctx, service))
+		bookRoute.PUT("/", crud.UpdateBook(ctx, service))
+		bookRoute.PATCH("/:id/", func(c *gin.Context) {})
 	}
 
-	healthRoute := baseRouter.Group("/health-check")
+	healthRouter := router.Group("/health-check")
 	{
-		healthRoute.GET("/ping", ping.Ping())
-		healthRoute.GET("/check", health.Check(conn))
+		healthRouter.GET("/ping", ping.Ping())
+		healthRouter.GET("/check", health.Check(conn))
 	}
 
 	srv := &http.Server{
 		Addr:           fmt.Sprintf("%s:%d", cfg.HTTPServer.Address, cfg.HTTPServer.Port),
-		Handler:        baseRouter,
+		Handler:        router,
 		ReadTimeout:    cfg.HTTPServer.Timeout,
 		WriteTimeout:   cfg.HTTPServer.Timeout,
 		IdleTimeout:    cfg.HTTPServer.IdleTimeout,

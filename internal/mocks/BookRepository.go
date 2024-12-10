@@ -133,6 +133,186 @@ func (_m *BookRepository) GetBook(ctx context.Context, id uuid.UUID) (postgres.B
 	return r0, r1
 }
 
+// UpdateAuthorBook provides a mock function with given fields: ctx, arg
+func (_m *BookRepository) UpdateAuthorBook(ctx context.Context, arg postgres.UpdateAuthorBookParams) (uuid.UUID, error) {
+	ret := _m.Called(ctx, arg)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateAuthorBook")
+	}
+
+	var r0 uuid.UUID
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateAuthorBookParams) (uuid.UUID, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateAuthorBookParams) uuid.UUID); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(uuid.UUID)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateAuthorBookParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateBook provides a mock function with given fields: ctx, arg
+func (_m *BookRepository) UpdateBook(ctx context.Context, arg postgres.UpdateBookParams) (uuid.UUID, error) {
+	ret := _m.Called(ctx, arg)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateBook")
+	}
+
+	var r0 uuid.UUID
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateBookParams) (uuid.UUID, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateBookParams) uuid.UUID); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(uuid.UUID)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateBookParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateDescriptionBook provides a mock function with given fields: ctx, arg
+func (_m *BookRepository) UpdateDescriptionBook(ctx context.Context, arg postgres.UpdateDescriptionBookParams) (uuid.UUID, error) {
+	ret := _m.Called(ctx, arg)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateDescriptionBook")
+	}
+
+	var r0 uuid.UUID
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateDescriptionBookParams) (uuid.UUID, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateDescriptionBookParams) uuid.UUID); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(uuid.UUID)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateDescriptionBookParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateGenreBook provides a mock function with given fields: ctx, arg
+func (_m *BookRepository) UpdateGenreBook(ctx context.Context, arg postgres.UpdateGenreBookParams) (uuid.UUID, error) {
+	ret := _m.Called(ctx, arg)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateGenreBook")
+	}
+
+	var r0 uuid.UUID
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateGenreBookParams) (uuid.UUID, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateGenreBookParams) uuid.UUID); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(uuid.UUID)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateGenreBookParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateNumberPagesBook provides a mock function with given fields: ctx, arg
+func (_m *BookRepository) UpdateNumberPagesBook(ctx context.Context, arg postgres.UpdateNumberPagesBookParams) (uuid.UUID, error) {
+	ret := _m.Called(ctx, arg)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateNumberPagesBook")
+	}
+
+	var r0 uuid.UUID
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateNumberPagesBookParams) (uuid.UUID, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateNumberPagesBookParams) uuid.UUID); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(uuid.UUID)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateNumberPagesBookParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// UpdateTitleBook provides a mock function with given fields: ctx, arg
+func (_m *BookRepository) UpdateTitleBook(ctx context.Context, arg postgres.UpdateTitleBookParams) (uuid.UUID, error) {
+	ret := _m.Called(ctx, arg)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateTitleBook")
+	}
+
+	var r0 uuid.UUID
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateTitleBookParams) (uuid.UUID, error)); ok {
+		return rf(ctx, arg)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, postgres.UpdateTitleBookParams) uuid.UUID); ok {
+		r0 = rf(ctx, arg)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(uuid.UUID)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, postgres.UpdateTitleBookParams) error); ok {
+		r1 = rf(ctx, arg)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // NewBookRepository creates a new instance of BookRepository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewBookRepository(t interface {

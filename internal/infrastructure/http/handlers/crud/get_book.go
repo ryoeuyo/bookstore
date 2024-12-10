@@ -9,7 +9,7 @@ import (
 	"github.com/ryoeuyo/bookstore/internal/application/service"
 )
 
-func GetBook(ctx context.Context, service *service.BookService) gin.HandlerFunc {
+func GetBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idParam := c.Param("id")
 		id, err := uuid.Parse(idParam)
@@ -21,7 +21,7 @@ func GetBook(ctx context.Context, service *service.BookService) gin.HandlerFunc 
 			return
 		}
 
-		book, err := service.GetBook(ctx, id)
+		book, err := s.GetBook(ctx, id)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{

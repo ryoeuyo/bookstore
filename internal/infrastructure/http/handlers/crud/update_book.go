@@ -2,28 +2,25 @@ package crud
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/ryoeuyo/bookstore/internal/application/service"
+	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
-func DeleteBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
+func UpdateBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		idParam := c.Param("id")
-		log.Print(idParam)
-		id, err := uuid.Parse(idParam)
-		if err != nil {
+		var bookUpdateParams postgres.UpdateBookParams
+		if err := c.ShouldBindJSON(&bookUpdateParams); err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "id is invalid",
+				"error": ErrDeserialize,
 			})
 			return
 		}
 
-		id, err = s.DeleteBook(ctx, id)
+		id, err := s.UpdateBook(ctx, bookUpdateParams)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -33,7 +30,8 @@ func DeleteBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"id": id,
+			"message": "updated",
+			"id":      id,
 		})
 	}
 }

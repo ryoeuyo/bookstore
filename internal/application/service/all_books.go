@@ -8,7 +8,7 @@ import (
 )
 
 func (s *BookService) AllBooks(ctx context.Context) (*[]postgres.Book, error) {
-	books, err := s.Repository.AllBooks(ctx)
+	books, err := s.Repo.AllBooks(ctx)
 	if err != nil {
 		return nil, err
 	}

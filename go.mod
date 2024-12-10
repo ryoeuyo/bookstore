@@ -3,6 +3,7 @@ module github.com/ryoeuyo/bookstore
 go 1.23.3
 
 require (
+	dario.cat/mergo v1.0.1 // indirect
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bytedance/sonic v1.12.5 // indirect

@@ -21,7 +21,7 @@ import (
 func TestAddBook(t *testing.T) {
 	mockRepo := new(mocks.BookRepository)
 	svc := &service.BookService{
-		Repository: mockRepo,
+		Repo: mockRepo,
 	}
 
 	testBook := postgres.AddBookParams{

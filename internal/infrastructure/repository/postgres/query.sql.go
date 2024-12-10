@@ -25,11 +25,11 @@ RETURNING id
 `
 
 type AddBookParams struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Genre       string `json:"genre"`
-	Author      string `json:"author"`
-	Numberpages int32  `json:"numberpages"`
+	Title       string `json:"title" validate:"notempty,required"`
+	Description string `json:"description" validate:"notempty,required"`
+	Genre       string `json:"genre" validate:"notempty,required"`
+	Author      string `json:"author" validate:"notempty,required"`
+	Numberpages int32  `json:"numberpages" validate:"notzero,required"`
 }
 
 func (q *Queries) AddBook(ctx context.Context, arg AddBookParams) (uuid.UUID, error) {
@@ -109,4 +109,139 @@ func (q *Queries) GetBook(ctx context.Context, id uuid.UUID) (Book, error) {
 		&i.Numberpages,
 	)
 	return i, err
+}
+
+const updateAuthorBook = `-- name: UpdateAuthorBook :one
+UPDATE books
+SET author = $2,
+    updatedAt = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id
+`
+
+type UpdateAuthorBookParams struct {
+	ID     uuid.UUID `json:"id" validate:"required"`
+	Author string    `json:"author" validate:"notempty,required"`
+}
+
+func (q *Queries) UpdateAuthorBook(ctx context.Context, arg UpdateAuthorBookParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, updateAuthorBook, arg.ID, arg.Author)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const updateBook = `-- name: UpdateBook :one
+UPDATE books
+set title = $2,
+    description = $3,
+    genre = $4,
+    author = $5,
+    numberPages = $6,
+    updatedAt = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id
+`
+
+type UpdateBookParams struct {
+	ID          uuid.UUID `json:"id" validate:"required"`
+	Title       string    `json:"title" validate:"notempty,required"`
+	Description string    `json:"description" validate:"notempty,required"`
+	Genre       string    `json:"genre" validate:"notempty,required"`
+	Author      string    `json:"author" validate:"notempty,required"`
+	Numberpages int32     `json:"numberpages" validate:"notzero,required"`
+}
+
+func (q *Queries) UpdateBook(ctx context.Context, arg UpdateBookParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, updateBook,
+		arg.ID,
+		arg.Title,
+		arg.Description,
+		arg.Genre,
+		arg.Author,
+		arg.Numberpages,
+	)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const updateDescriptionBook = `-- name: UpdateDescriptionBook :one
+UPDATE books
+SET description = $2,
+    updatedAt = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id
+`
+
+type UpdateDescriptionBookParams struct {
+	ID          uuid.UUID `json:"id" validate:"required"`
+	Description string    `json:"description" validate:"notempty,required"`
+}
+
+func (q *Queries) UpdateDescriptionBook(ctx context.Context, arg UpdateDescriptionBookParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, updateDescriptionBook, arg.ID, arg.Description)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const updateGenreBook = `-- name: UpdateGenreBook :one
+UPDATE books
+SET genre = $2,
+    updatedAt = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id
+`
+
+type UpdateGenreBookParams struct {
+	ID    uuid.UUID `json:"id" validate:"required"`
+	Genre string    `json:"genre" validate:"notempty,required"`
+}
+
+func (q *Queries) UpdateGenreBook(ctx context.Context, arg UpdateGenreBookParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, updateGenreBook, arg.ID, arg.Genre)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const updateNumberPagesBook = `-- name: UpdateNumberPagesBook :one
+UPDATE books
+SET numberPages = $2,
+    updatedAt = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id
+`
+
+type UpdateNumberPagesBookParams struct {
+	ID          uuid.UUID `json:"id" validate:"required"`
+	Numberpages int32     `json:"numberpages" validate:"notzero, required"`
+}
+
+func (q *Queries) UpdateNumberPagesBook(ctx context.Context, arg UpdateNumberPagesBookParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, updateNumberPagesBook, arg.ID, arg.Numberpages)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
+}
+
+const updateTitleBook = `-- name: UpdateTitleBook :one
+UPDATE books
+SET title = $2,
+    updatedAt = CURRENT_TIMESTAMP
+WHERE id = $1
+RETURNING id
+`
+
+type UpdateTitleBookParams struct {
+	ID    uuid.UUID `json:"id" validate:"required"`
+	Title string    `json:"title" validate:"notempty,required"`
+}
+
+func (q *Queries) UpdateTitleBook(ctx context.Context, arg UpdateTitleBookParams) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, updateTitleBook, arg.ID, arg.Title)
+	var id uuid.UUID
+	err := row.Scan(&id)
+	return id, err
 }

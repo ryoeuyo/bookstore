@@ -1,5 +1,6 @@
 APP_NAME := bookstore
 GOOSE_MIGRATIONS_DIR := ./sql/migrations
+GOOSE_DBSTRING := postgres://postgres:postgres@127.0.0.1:5432/postgres
 GOOSE_DRIVER := postgres
 
 run-local:
@@ -15,3 +16,4 @@ run:
 	./build/$(APP_NAME)
 
 migrations:
+	goose $(GOOSE_DRIVER) $(GOOSE_DBSTRING) -dir $(GOOSE_MIGRATIONS_DIR) up

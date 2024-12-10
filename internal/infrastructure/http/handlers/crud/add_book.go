@@ -2,6 +2,7 @@ package crud
 
 import (
 	"context"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,18 +10,18 @@ import (
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
-func AddBook(ctx context.Context, service *service.BookService) gin.HandlerFunc {
+func AddBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var book postgres.AddBookParams
 		if err := c.ShouldBindJSON(&book); err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": err.Error(),
+				"error": errors.New(ErrDeserialize),
 			})
 			return
 		}
 
-		id, err := service.AddBook(ctx, book)
+		id, err := s.AddBook(ctx, book)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{

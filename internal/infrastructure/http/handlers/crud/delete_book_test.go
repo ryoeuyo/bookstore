@@ -18,7 +18,7 @@ import (
 func TestDeleteBook(t *testing.T) {
 	mockRepo := new(mocks.BookRepository)
 	svc := &service.BookService{
-		Repository: mockRepo,
+		Repo: mockRepo,
 	}
 
 	t.Run("successful delete", func(t *testing.T) {
