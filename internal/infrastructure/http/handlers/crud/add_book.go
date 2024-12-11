@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/ryoeuyo/bookstore/internal/application/service"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
@@ -19,6 +20,19 @@ func AddBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
 				"error": errors.New(ErrDeserialize),
 			})
 			return
+		}
+
+		err := s.Validate.Struct(book)
+		if err != nil {
+			if _, ok := err.(*validator.InvalidValidationError); ok {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"errror": err.Error(),
+				})
+			}
+
+			c.JSON(http.StatusBadRequest, gin.H{
+				"errror": ErrValidation,
+			})
 		}
 
 		id, err := s.AddBook(ctx, book)

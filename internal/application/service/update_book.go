@@ -5,22 +5,12 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
 func (s *BookService) UpdateBook(ctx context.Context, updBook postgres.UpdateBookParams) (uuid.UUID, error) {
-	err := s.Validate.Struct(updBook)
-	if err != nil {
-		if _, ok := err.(*validator.InvalidValidationError); ok {
-			return uuid.Nil, errors.New(ErrValidation)
-		}
-
-		return uuid.Nil, errors.New(ErrInvalidBook)
-	}
-
 	id, err := s.Repo.UpdateBook(ctx, updBook)
 	if err != nil {
 		if err == pgx.ErrNoRows {

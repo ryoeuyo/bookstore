@@ -56,7 +56,7 @@ func main() {
 		bookRoute.GET("/:id", crud.GetBook(ctx, service))
 		bookRoute.DELETE("/:id", crud.DeleteBook(ctx, service))
 		bookRoute.PUT("/", crud.UpdateBook(ctx, service))
-		bookRoute.PATCH("/:id/", func(c *gin.Context) {})
+		bookRoute.PATCH("/", crud.UpdateFieldBook(ctx, service))
 	}
 
 	healthRouter := router.Group("/health-check")

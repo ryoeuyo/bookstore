@@ -20,7 +20,7 @@ import (
 func TestAllBook(t *testing.T) {
 	mockRepo := new(mocks.BookRepository)
 	svc := &service.BookService{
-		Repository: mockRepo,
+		Repo: mockRepo,
 	}
 
 	req, _ := http.NewRequest(http.MethodGet, "/books", nil)
