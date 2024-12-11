@@ -7,22 +7,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/ryoeuyo/bookstore/internal/application/service"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
-func AddBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
+func (h *BookHandler) AddBook(ctx context.Context) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var book postgres.AddBookParams
 		if err := c.ShouldBindJSON(&book); err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": errors.New(ErrDeserialize),
+				"error": errors.New(ErrInvalidJSONRequest),
 			})
 			return
 		}
 
-		err := s.Validate.Struct(book)
+		err := h.Valid.Struct(book)
 		if err != nil {
 			if _, ok := err.(*validator.InvalidValidationError); ok {
 				c.JSON(http.StatusInternalServerError, gin.H{
@@ -35,7 +34,7 @@ func AddBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
 			})
 		}
 
-		id, err := s.AddBook(ctx, book)
+		id, err := h.Svc.AddBook(ctx, book)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{

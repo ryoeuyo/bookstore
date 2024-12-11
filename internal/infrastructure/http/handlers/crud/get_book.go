@@ -6,22 +6,21 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/ryoeuyo/bookstore/internal/application/service"
 )
 
-func GetBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
+func (h *BookHandler) GetBook(ctx context.Context) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		idParam := c.Param("id")
 		id, err := uuid.Parse(idParam)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "id is invalid",
+				"error": ErrInvalidJSONRequest,
 			})
 			return
 		}
 
-		book, err := s.GetBook(ctx, id)
+		book, err := h.Svc.GetBook(ctx, id)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{

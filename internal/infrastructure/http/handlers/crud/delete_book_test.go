@@ -7,19 +7,29 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/crud"
+
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/ryoeuyo/bookstore/internal/application/service"
-	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/crud"
 	"github.com/ryoeuyo/bookstore/internal/mocks"
+	"github.com/ryoeuyo/bookstore/internal/shared/validate"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDeleteBook(t *testing.T) {
 	mockRepo := new(mocks.BookRepository)
+
+	v := validator.New()
+	v.RegisterValidation("notzero", validate.IsNotZero)
+	v.RegisterValidation("notempty", validate.IsNotEmpty)
+
 	svc := &service.BookService{
 		Repo: mockRepo,
 	}
+
+	handler := crud.NewBookHandler(svc, v)
 
 	t.Run("successful delete", func(t *testing.T) {
 		mockID := uuid.New()
@@ -31,7 +41,7 @@ func TestDeleteBook(t *testing.T) {
 		mockRepo.On("DeleteBook", context.Background(), mockID).Return(mockID, nil)
 
 		router := gin.New()
-		router.DELETE("/books/:id", crud.DeleteBook(context.Background(), svc))
+		router.DELETE("/books/:id", handler.DeleteBook(context.Background()))
 
 		router.ServeHTTP(rr, req)
 
@@ -55,7 +65,7 @@ func TestDeleteBook(t *testing.T) {
 		rr := httptest.NewRecorder()
 
 		router := gin.New()
-		router.DELETE("/books/:id", crud.DeleteBook(context.Background(), svc))
+		router.DELETE("/books/:id", handler.DeleteBook(context.Background()))
 
 		router.ServeHTTP(rr, req)
 

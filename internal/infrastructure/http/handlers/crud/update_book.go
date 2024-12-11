@@ -7,35 +7,38 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/ryoeuyo/bookstore/internal/application/service"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
-func UpdateBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
+func (h *BookHandler) UpdateBook(ctx context.Context) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var bookUpdateParams postgres.UpdateBookParams
 		if err := c.ShouldBindJSON(&bookUpdateParams); err != nil {
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": ErrDeserialize,
+				"error": ErrInvalidJSONRequest,
 			})
 			return
 		}
 
-		err := s.Validate.Struct(bookUpdateParams)
+		err := h.Valid.Struct(bookUpdateParams)
 		if err != nil {
 			if _, ok := err.(*validator.InvalidValidationError); ok {
+				c.Error(err)
 				c.JSON(http.StatusInternalServerError, gin.H{
 					"errror": err.Error(),
 				})
+				return
 			}
 
+			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
 				"errror": err.Error(),
 			})
+			return
 		}
 
-		id, err := s.UpdateBook(ctx, bookUpdateParams)
+		id, err := h.Svc.UpdateBook(ctx, bookUpdateParams)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -51,13 +54,13 @@ func UpdateBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
 	}
 }
 
-func UpdateFieldBook(ctx context.Context, s *service.BookService) gin.HandlerFunc {
+func (h *BookHandler) UpdateFieldBook(ctx context.Context) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		field := c.Query("field")
 		if field == "" {
-			c.Error(errors.New(ErrDeserialize))
+			c.Error(errors.New(ErrInvalidField))
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": ErrDeserialize,
+				"error": c.Errors.Errors(),
 			})
 			return
 		}
@@ -65,34 +68,36 @@ func UpdateFieldBook(ctx context.Context, s *service.BookService) gin.HandlerFun
 		var req UpdateFieldBookRequest
 
 		if err := c.ShouldBindJSON(&req); err != nil {
-			c.Error(errors.New(ErrDeserialize))
+			c.Error(errors.New(ErrInvalidField))
 			c.JSON(http.StatusBadRequest, gin.H{
-				"error": ErrDeserialize,
+				"error": c.Errors.Errors(),
 			})
 			return
 		}
 
-		err := s.Validate.Struct(req)
+		err := h.Valid.Struct(req)
 		if err != nil {
 			if _, ok := err.(*validator.InvalidValidationError); ok {
+				c.Error(errors.New(ErrValidation))
 				c.JSON(http.StatusInternalServerError, gin.H{
-					"errror": err.Error(),
+					"errror": c.Errors.Errors(),
 				})
 
 				return
 			}
 
+			c.Error(errors.New(ErrInvalidJSONRequest))
 			c.JSON(http.StatusBadRequest, gin.H{
-				"errror": ErrValidation,
+				"errror": c.Errors.Errors(),
 			})
 			return
 		}
 
-		id, err := s.UpdateFieldBook(ctx, req.ID, field, req.Value)
+		id, err := h.Svc.UpdateFieldBook(ctx, req.ID, field, req.Value)
 		if err != nil {
-			c.Error(err)
+			c.Error(errors.New(ErrInternalServer))
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": err.Error(),
+				"error": c.Errors.Errors(),
 			})
 			return
 		}

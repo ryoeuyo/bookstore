@@ -8,80 +8,92 @@ import (
 	"testing"
 	"time"
 
+	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/crud"
+
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/ryoeuyo/bookstore/internal/application/service"
-	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/crud"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 	"github.com/ryoeuyo/bookstore/internal/mocks"
+	"github.com/ryoeuyo/bookstore/internal/shared/validate"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAllBook(t *testing.T) {
-	mockRepo := new(mocks.BookRepository)
-	svc := &service.BookService{
-		Repo: mockRepo,
-	}
+	t.Run("all books", func(t *testing.T) {
+		mockRepo := new(mocks.BookRepository)
 
-	req, _ := http.NewRequest(http.MethodGet, "/books", nil)
-	defer req.Body.Close()
+		v := validator.New()
+		v.RegisterValidation("notzero", validate.IsNotZero)
+		v.RegisterValidation("notempty", validate.IsNotEmpty)
 
-	rr := httptest.NewRecorder()
-	testOutputBooks := []postgres.Book{
-		{
-			ID:          uuid.New(),
-			Createdat:   time.Now(),
-			Updatedat:   time.Now(),
-			Title:       "Test Book",
-			Author:      "Test Author",
-			Description: "Test Description",
-			Genre:       "Fiction",
-			Numberpages: 324,
-		},
-		{
-			ID:          uuid.New(),
-			Createdat:   time.Now(),
-			Updatedat:   time.Now(),
-			Title:       "Test Book",
-			Author:      "Test Author",
-			Description: "Test Description",
-			Genre:       "Fiction",
-			Numberpages: 324,
-		},
-		{
-			ID:          uuid.New(),
-			Createdat:   time.Now(),
-			Updatedat:   time.Now(),
-			Title:       "Test Book",
-			Author:      "Test Author",
-			Description: "Test Description",
-			Genre:       "Fiction",
-			Numberpages: 324,
-		},
-	}
-	mockRepo.On("AllBooks", context.Background()).Return(testOutputBooks, nil)
+		svc := &service.BookService{
+			Repo: mockRepo,
+		}
 
-	router := gin.New()
-	router.GET("/books", crud.AllBooks(context.Background(), svc))
+		handler := crud.NewBookHandler(svc, v)
 
-	router.ServeHTTP(rr, req)
+		req, _ := http.NewRequest(http.MethodGet, "/books", nil)
+		defer req.Body.Close()
 
-	assert.Equal(t, http.StatusOK, rr.Code)
+		rr := httptest.NewRecorder()
+		testOutputBooks := []postgres.Book{
+			{
+				ID:          uuid.New(),
+				Createdat:   time.Now(),
+				Updatedat:   time.Now(),
+				Title:       "Test Book",
+				Author:      "Test Author",
+				Description: "Test Description",
+				Genre:       "Fiction",
+				Numberpages: 324,
+			},
+			{
+				ID:          uuid.New(),
+				Createdat:   time.Now(),
+				Updatedat:   time.Now(),
+				Title:       "Test Book",
+				Author:      "Test Author",
+				Description: "Test Description",
+				Genre:       "Fiction",
+				Numberpages: 324,
+			},
+			{
+				ID:          uuid.New(),
+				Createdat:   time.Now(),
+				Updatedat:   time.Now(),
+				Title:       "Test Book",
+				Author:      "Test Author",
+				Description: "Test Description",
+				Genre:       "Fiction",
+				Numberpages: 324,
+			},
+		}
+		mockRepo.On("AllBooks", context.Background()).Return(testOutputBooks, nil)
 
-	var resp []postgres.Book
-	if err := json.Unmarshal(rr.Body.Bytes(), &resp); err != nil {
-		t.Fatalf("Error unmarshaling response body: %v", err)
-	}
+		router := gin.New()
+		router.GET("/books", handler.AllBooks(context.Background()))
 
-	for i := range resp {
-		// Zeroing fields
-		resp[i].Createdat = time.Time{}
-		resp[i].Updatedat = time.Time{}
-		testOutputBooks[i].Createdat = time.Time{}
-		testOutputBooks[i].Updatedat = time.Time{}
+		router.ServeHTTP(rr, req)
 
-		assert.Equal(t, testOutputBooks[i], resp[i])
-	}
+		assert.Equal(t, http.StatusOK, rr.Code)
 
-	mockRepo.AssertExpectations(t)
+		var resp []postgres.Book
+		if err := json.Unmarshal(rr.Body.Bytes(), &resp); err != nil {
+			t.Fatalf("Error unmarshaling response body: %v", err)
+		}
+
+		for i := range resp {
+			// Zeroing fields
+			resp[i].Createdat = time.Time{}
+			resp[i].Updatedat = time.Time{}
+			testOutputBooks[i].Createdat = time.Time{}
+			testOutputBooks[i].Updatedat = time.Time{}
+
+			assert.Equal(t, testOutputBooks[i], resp[i])
+		}
+
+		mockRepo.AssertExpectations(t)
+	})
 }

@@ -5,12 +5,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/ryoeuyo/bookstore/internal/application/service"
 )
 
-func AllBooks(ctx context.Context, s *service.BookService) gin.HandlerFunc {
+func (h *BookHandler) AllBooks(ctx context.Context) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		books, err := s.AllBooks(ctx)
+		books, err := h.Svc.AllBooks(ctx)
 		if err != nil {
 			c.Error(err)
 			c.JSON(http.StatusInternalServerError, gin.H{

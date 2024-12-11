@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"github.com/ryoeuyo/bookstore/internal/application/service"
 	"github.com/ryoeuyo/bookstore/internal/config"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/checks/health"
@@ -17,6 +18,7 @@ import (
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/metric"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 	"github.com/ryoeuyo/bookstore/internal/shared/logger"
+	"github.com/ryoeuyo/bookstore/internal/shared/validate"
 )
 
 func main() {
@@ -35,10 +37,15 @@ func main() {
 		"database": cfg.Database.Name,
 	}))
 
-	// Initialize handler dependencies
 	repo := postgres.New(conn)
 	metrics := metric.NewMetrics()
 	service := service.NewBookService(repo)
+
+	valid := validator.New()
+	valid.RegisterValidation("notzero", validate.IsNotZero)
+	valid.RegisterValidation("notempty", validate.IsNotEmpty)
+
+	handler := crud.NewBookHandler(service, valid)
 
 	router := gin.New()
 	router.Use(
@@ -48,15 +55,15 @@ func main() {
 		middleware.SlogLogger(logger),
 	)
 
-	apiRouter := router.Group("/api")
+	apiRouter := router.Group("/api/v1")
 	{
 		bookRoute := apiRouter.Group("/books")
-		bookRoute.GET("/", crud.AllBooks(ctx, service))
-		bookRoute.POST("/", crud.AddBook(ctx, service))
-		bookRoute.GET("/:id", crud.GetBook(ctx, service))
-		bookRoute.DELETE("/:id", crud.DeleteBook(ctx, service))
-		bookRoute.PUT("/", crud.UpdateBook(ctx, service))
-		bookRoute.PATCH("/", crud.UpdateFieldBook(ctx, service))
+		bookRoute.GET("/", handler.AllBooks(ctx))
+		bookRoute.POST("/", handler.AddBook(ctx))
+		bookRoute.GET("/:id", handler.GetBook(ctx))
+		bookRoute.DELETE("/:id", handler.DeleteBook(ctx))
+		bookRoute.PUT("/", handler.UpdateBook(ctx))
+		bookRoute.PATCH("/", handler.UpdateFieldBook(ctx))
 	}
 
 	healthRouter := router.Group("/health-check")
@@ -88,6 +95,5 @@ func main() {
 		os.Exit(1)
 	}
 
-	// TODO: write more handlers
 	// TODO: write swagger docs
 }

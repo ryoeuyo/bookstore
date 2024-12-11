@@ -1,6 +1,8 @@
 package crud
 
 var (
-	ErrDeserialize string = "couldn't deserialize data"
-	ErrValidation  string = "validation error, invalid request"
+	ErrValidation         string = "validation error, invalid request"
+	ErrInvalidJSONRequest string = "Invalid JSON request"
+	ErrInvalidField       string = "Invalid field"
+	ErrInternalServer     string = "Internal server error"
 )
