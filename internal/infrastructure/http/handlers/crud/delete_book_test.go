@@ -7,6 +7,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ryoeuyo/bookstore/internal/etc/validate"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/crud"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,6 @@ import (
 	"github.com/google/uuid"
 	"github.com/ryoeuyo/bookstore/internal/application/service"
 	"github.com/ryoeuyo/bookstore/internal/mocks"
-	"github.com/ryoeuyo/bookstore/internal/shared/validate"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/ryoeuyo/bookstore/internal/etc/validate"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/crud"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,6 @@ import (
 	"github.com/ryoeuyo/bookstore/internal/application/service"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 	"github.com/ryoeuyo/bookstore/internal/mocks"
-	"github.com/ryoeuyo/bookstore/internal/shared/validate"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -61,7 +61,6 @@ func TestAddBook(t *testing.T) {
 
 		router := gin.New()
 		router.POST("/books", handler.AddBook(context.Background()))
-
 		router.ServeHTTP(rr, req)
 
 		assert.Equal(t, http.StatusOK, rr.Code)

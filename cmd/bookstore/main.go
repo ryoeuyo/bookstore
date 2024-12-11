@@ -11,14 +11,14 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/ryoeuyo/bookstore/internal/application/service"
 	"github.com/ryoeuyo/bookstore/internal/config"
+	"github.com/ryoeuyo/bookstore/internal/etc/logger"
+	"github.com/ryoeuyo/bookstore/internal/etc/validate"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/checks/health"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/checks/ping"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/crud"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/handlers/middleware"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/http/metric"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
-	"github.com/ryoeuyo/bookstore/internal/shared/logger"
-	"github.com/ryoeuyo/bookstore/internal/shared/validate"
 )
 
 func main() {

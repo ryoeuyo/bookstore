@@ -14,9 +14,9 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"github.com/ryoeuyo/bookstore/internal/application/service"
+	"github.com/ryoeuyo/bookstore/internal/etc/validate"
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 	"github.com/ryoeuyo/bookstore/internal/mocks"
-	"github.com/ryoeuyo/bookstore/internal/shared/validate"
 	"github.com/stretchr/testify/assert"
 )
 
