@@ -11,7 +11,7 @@ import (
 func (s *BookService) DeleteBook(ctx context.Context, id uuid.UUID) (uuid.UUID, error) {
 	id, err := s.Repo.DeleteBook(ctx, id)
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return uuid.Nil, errors.New(ErrNotExists)
 		}
 

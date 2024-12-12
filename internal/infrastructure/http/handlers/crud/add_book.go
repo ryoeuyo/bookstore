@@ -30,7 +30,7 @@ func (h *BookHandler) AddBook(ctx context.Context) gin.HandlerFunc {
 			}
 
 			c.JSON(http.StatusBadRequest, gin.H{
-				"errror": ErrValidation,
+				"error": ErrValidation,
 			})
 		}
 

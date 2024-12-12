@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -93,11 +92,8 @@ func TestUpdateBook(t *testing.T) {
 
 		reqBody, _ := json.Marshal(testBook)
 		req, _ := http.NewRequest(http.MethodPut, "/books", bytes.NewReader(reqBody))
-		defer req.Body.Close()
 
 		rr := httptest.NewRecorder()
-
-		mockRepo.On("UpdateBook", context.Background(), testBook).Return(uuid.Nil, errors.New(crud.ErrValidation))
 
 		router := gin.New()
 		router.PUT("/books", handler.UpdateBook(context.Background()))
@@ -105,8 +101,6 @@ func TestUpdateBook(t *testing.T) {
 		router.ServeHTTP(rr, req)
 
 		assert.Equal(t, http.StatusBadRequest, rr.Code)
-
-		mockRepo.AssertExpectations(t)
 	})
 }
 

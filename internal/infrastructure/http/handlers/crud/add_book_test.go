@@ -45,12 +45,13 @@ func TestAddBook(t *testing.T) {
 	testInvalidBook := postgres.AddBookParams{
 		Numberpages: 0,
 		Title:       "43242",
+		Description: "",
+		Genre:       "",
 	}
 
 	t.Run("successful add", func(t *testing.T) {
 		reqBody, _ := json.Marshal(testBook)
 		req, _ := http.NewRequest(http.MethodPost, "/books", bytes.NewReader(reqBody))
-		defer req.Body.Close()
 
 		req.Header.Set("Content-Type", "application/json")
 
@@ -82,7 +83,7 @@ func TestAddBook(t *testing.T) {
 
 		rr := httptest.NewRecorder()
 
-		mockRepo.On("AddBook", context.Background(), testBook).Return(uuid.Nil, errors.New("failed to add book"))
+		mockRepo.On("AddBook", context.Background(), testInvalidBook).Return(uuid.Nil, errors.New("failed to add book"))
 
 		router := gin.New()
 		router.POST("/books", handler.AddBook(context.Background()))

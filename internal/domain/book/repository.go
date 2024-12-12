@@ -7,7 +7,7 @@ import (
 	"github.com/ryoeuyo/bookstore/internal/infrastructure/repository/postgres"
 )
 
-type BookRepository interface {
+type Repository interface {
 	AllBooks(ctx context.Context) ([]postgres.Book, error)
 	GetBook(ctx context.Context, id uuid.UUID) (postgres.Book, error)
 	AddBook(ctx context.Context, params postgres.AddBookParams) (uuid.UUID, error)

@@ -34,7 +34,6 @@ func TestDeleteBook(t *testing.T) {
 	t.Run("successful delete", func(t *testing.T) {
 		mockID := uuid.New()
 		req, _ := http.NewRequest(http.MethodDelete, "/books/"+mockID.String(), nil)
-		defer req.Body.Close()
 
 		rr := httptest.NewRecorder()
 

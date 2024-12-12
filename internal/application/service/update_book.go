@@ -13,7 +13,7 @@ import (
 func (s *BookService) UpdateBook(ctx context.Context, updBook postgres.UpdateBookParams) (uuid.UUID, error) {
 	id, err := s.Repo.UpdateBook(ctx, updBook)
 	if err != nil {
-		if err == pgx.ErrNoRows {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return uuid.Nil, errors.New(ErrNotExists)
 		}
 

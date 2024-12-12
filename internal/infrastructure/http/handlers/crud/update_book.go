@@ -26,14 +26,14 @@ func (h *BookHandler) UpdateBook(ctx context.Context) gin.HandlerFunc {
 			if _, ok := err.(*validator.InvalidValidationError); ok {
 				c.Error(err)
 				c.JSON(http.StatusInternalServerError, gin.H{
-					"errror": err.Error(),
+					"error": err.Error(),
 				})
 				return
 			}
 
 			c.Error(err)
 			c.JSON(http.StatusBadRequest, gin.H{
-				"errror": err.Error(),
+				"error": err.Error(),
 			})
 			return
 		}
@@ -80,7 +80,7 @@ func (h *BookHandler) UpdateFieldBook(ctx context.Context) gin.HandlerFunc {
 			if _, ok := err.(*validator.InvalidValidationError); ok {
 				c.Error(errors.New(ErrValidation))
 				c.JSON(http.StatusInternalServerError, gin.H{
-					"errror": c.Errors.Errors(),
+					"error": c.Errors.Errors(),
 				})
 
 				return
@@ -88,7 +88,7 @@ func (h *BookHandler) UpdateFieldBook(ctx context.Context) gin.HandlerFunc {
 
 			c.Error(errors.New(ErrInvalidJSONRequest))
 			c.JSON(http.StatusBadRequest, gin.H{
-				"errror": c.Errors.Errors(),
+				"error": c.Errors.Errors(),
 			})
 			return
 		}

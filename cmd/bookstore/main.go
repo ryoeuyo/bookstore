@@ -39,13 +39,13 @@ func main() {
 
 	repo := postgres.New(conn)
 	metrics := metric.NewMetrics()
-	service := service.NewBookService(repo)
+	svc := service.NewBookService(repo)
 
 	valid := validator.New()
 	valid.RegisterValidation("notzero", validate.IsNotZero)
 	valid.RegisterValidation("notempty", validate.IsNotEmpty)
 
-	handler := crud.NewBookHandler(service, valid)
+	handler := crud.NewBookHandler(svc, valid)
 
 	router := gin.New()
 	router.Use(

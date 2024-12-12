@@ -47,7 +47,6 @@ func TestGetBook(t *testing.T) {
 		}
 
 		req, _ := http.NewRequest(http.MethodGet, "/books/"+mockID.String(), nil)
-		defer req.Body.Close()
 
 		rr := httptest.NewRecorder()
 

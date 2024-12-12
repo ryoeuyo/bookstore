@@ -35,7 +35,6 @@ func TestAllBook(t *testing.T) {
 		handler := crud.NewBookHandler(svc, v)
 
 		req, _ := http.NewRequest(http.MethodGet, "/books", nil)
-		defer req.Body.Close()
 
 		rr := httptest.NewRecorder()
 		testOutputBooks := []postgres.Book{
